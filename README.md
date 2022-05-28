@@ -32,6 +32,6 @@ Robothon Grand Challenge 2022 submission of Team Pandaria 2.0
 ### Starting a trial
 - initialize Franka hand and open brakes in Franka Control Interface
 - source and build workspace
-  - inside workspace: source devel/setup.bash
+  - inside workspace: $ source devel/setup.bash
   - $ catkin build
 - launch program with: $ roslaunch pandaria_ros bringup.launch robot_ip:=<ROBOT-IP>
