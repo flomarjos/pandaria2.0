@@ -1,0 +1,30 @@
+- start_pose_task: # of frame panda_link8
+  - orientation: [0, 0.923956 ,-0.382499 ,0]
+  - translation_inital: [0.5, 0, 0.65]
+  - translation_above_center: [-0.03, 0, -0.3294546]   # 0[0, 0, -0.35] translation calib[-0.00152739 +0.0452518  -0.0594546]
+  - orientation_above_center: [0.7071068, 0, 0, 0.7071068]  
+
+- button_task:
+  - translation_aboveButton1: [0.052, 0.055,  -0.22]         # x, y, z
+  - orientation_aboveButton1: [0.9238795, 0, 0, 0.3826834]   # w, x, y, z
+  - translation_aboveButton2: [0.052, 0.078,  -0.14]         # x, y, z
+  - orientation_aboveButton2: [0.9238795, 0, 0, 0.3826834]   # w, x, y, z
+  - translation_press_button: [0.058, 0.078,  -0.005]
+  - orientation_press_button: [-1, 0, 0, 0]
+  - translation_safe_point: [0.032, 0.0,  -0.2]                    # x, y, z
+  - orientation_safe_point: [0.9238795, 0, 0, 0.3826834]              # w, x, y, z 
+
+- key_task:
+  - translation_pick_supp: [0.028, -0.063, -0.2 ]        # [0.108, 0.074, -0.1]        # x, y, z
+  # - orientation_pick_supp: [-0.8733046 , 0, 0, 0.4871745] # [0.525322, 0, 0, 0.8509035]  # w, x, y, z
+  - orientation_pick_supp: [0.3826834 , 0, 0, 0.9238795] # [0.525322, 0, 0, 0.8509035]  # w, x, y, z
+  - translation_pick: [0.032, -0.063, -0.18]             # x, y, z
+  # - orientation_pick: [-0.8733046 , 0, 0, 0.4871745]       # w, x, y, z 90 degree around z
+  - orientation_pick: [0.3826834 , 0, 0, 0.9238795]       # w, x, y, z 90 degree around z
+  - translation_mid: [0.032, -0.063, -0.28]              # x, y, z
+  - orientation_mid: [0.3826834 , 0, 0, 0.9238795]      # w, x, y, z
+  - translation_mid2: [-0.033, -0.063, -0.28]              # x, y, z
+  - orientation_mid2: [0.3826834 , 0, 0, 0.9238795]      # w, x, y, z
+  - translation_insert: [-0.033, -0.063, -0.28]            # x, y, z
+  - orientation_insert: [0.9238795, 0, 0, 0.3826834]                    # w, x, y, z 
+

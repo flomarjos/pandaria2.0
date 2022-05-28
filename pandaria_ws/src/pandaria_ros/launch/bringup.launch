@@ -1,0 +1,69 @@
+<launch>
+    <arg name="robot_ip" />
+    <arg name="load_gripper" default="true" />
+    <arg name="task_file" default="tasks.yaml" />
+    <arg name="real_robot" default="true" />
+    <arg name="planning_plugin" value="ompl_interface/OMPLPlanner" />
+    <arg name="planning_adapters" value="default_planner_request_adapters/AddTimeParameterization default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints" />
+
+    <!-- Load the URDF, SRDF and other .yaml configuration files on the param server -->
+    <include file="$(find panda_moveit_config)/launch/planning_context.launch">
+        <arg name="load_robot_description" value="true" />
+    </include>
+
+    <!-- If needed, broadcast static tf for robot root -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="virtual_joint_broadcaster_1" args="0 0 0 0 0 0 world panda_link0" />
+
+    <!-- Launch a joint trajectory controller and LOAD other custom controllers TODO -->
+    <group if="$(arg real_robot)">
+        <include file="$(find franka_control)/launch/franka_control.launch">
+            <arg name="robot_ip" value="$(arg robot_ip)" />
+            <arg name="load_gripper" value="$(arg load_gripper)" />
+        </include>
+
+        <rosparam command="load" file="$(find franka_control)/config/default_controllers.yaml" />
+        <rosparam command="load" file="$(find pandaria_ros)/config/controllers.yaml" />
+        
+        <node name="controller_spawner_actives" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="--stopped effort_joint_trajectory_controller" />
+        <node name="controller_spawner_inactives" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="cartesian_impedance_controller" />
+        <!-- <node name="rqt_reconfigure" pkg="rqt_reconfigure" type="rqt_reconfigure" required="false" /> -->
+    </group>
+
+    <rosparam command="load" param="task_configuration" file="$(find pandaria_ros)/config/$(arg task_file)" />
+
+    <!-- publish static taskboard transform if robot is not connected, because then robot_state is unknown => camera-pose is unknown -->
+    <group if="$(arg real_robot)">
+        <!-- xyz="0.08372 0.0226143 -0.0246996" rpy="2.93085 -3.07006 -0.0285365" -->
+        <node pkg="tf2_ros" type="static_transform_publisher" name="camera_link_broadcaster"
+                args="0.00152739 -0.0452518  0.0594546   0.0 0.0 0.3826843 0.9238792 panda_link8 camera" />
+                <!-- args="-0.0153335 -0.0398365 0.047638   0.0180078 0.00271482 0.383261 0.923461 panda_link8 camera" /> -->
+
+        <!-- start board detector package and publish the taskboard coordinate frame -->
+        <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+            <arg name="align_depth" value="true" />
+        </include>
+        <node pkg="board_detector" type="boxDetector.py" name="detector"/>
+        <node pkg="tf2_static_filters" type="taskboard_center_filter" name="taskboard_center_filter"/>
+
+        <node pkg="tf2_static_filters" type="taskboard_refined_filter" name="taskboard_refined_filter"/>
+    </group>
+    <group unless="$(arg real_robot)">
+        <node pkg="tf2_ros" type="static_transform_publisher" name="taskboard_broadcaster" args="0.4 0 0.1
+                                                                                                0.923956 -0.382499 0 0
+                                                                                                panda_link0 taskboard_reference" />
+    </group>
+
+    <!--param name="/use_sim_time" value="true"/-->
+
+    <node pkg="pandaria_ros" type="task_coordinator" name="task_coordinator" output="screen">
+        <rosparam command="load" file="$(find panda_moveit_config)/config/kinematics.yaml" />
+        <rosparam command="load" file="$(find panda_moveit_config)/config/cartesian_limits.yaml" />
+        <param name="planning_plugin" value="$(arg planning_plugin)" />
+        <param name="request_adapters" value="$(arg planning_adapters)" />
+        <rosparam command="load" file="$(find panda_moveit_config)/config/ompl_planning.yaml" />
+        <remap from="~/equilibrium_pose" to="/cartesian_impedance_controller/equilibrium_pose" />
+    </node>
+    <node name="$(anon rviz)" pkg="rviz" type="rviz" respawn="false" output="screen" args="-d $(find pandaria_ros)/config/rviz_config.rviz">
+        <rosparam command="load" file="$(find panda_moveit_config)/config/kinematics.yaml" />
+    </node>
+</launch>

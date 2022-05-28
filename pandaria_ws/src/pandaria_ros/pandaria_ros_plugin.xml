@@ -1,0 +1,20 @@
+<library path="lib/libpandaria_ros">
+  <class name="pandaria_ros/CartesianImpedanceController"
+         type="pandaria_ros::CartesianImpedanceController"
+         base_class_type="controller_interface::ControllerBase">
+    <description>
+      Cartesian impedance controller
+    </description>
+  </class>
+</library>
+
+
+<library path="lib/libpandaria_ros">
+  <class name="pandaria_ros/ForceController"
+         type="pandaria_ros::ForceController"
+         base_class_type="controller_interface::ControllerBase">
+    <description>
+      Force controller
+    </description>
+  </class>
+</library>
