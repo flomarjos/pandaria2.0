@@ -1,4 +1,6 @@
 # Pandaria 2.0
+_Important note: In our videos, a white dot is in the middle of the physical board. We used it for debugging our board detection as "the true center" in the camera image. However it has never been used in any of our detection code nor anywhere else in the project. We simply forgot to remove it. Feel free to ask us any questions on that._
+
 Robothon Grand Challenge 2022 submission of Team Pandaria 2.0
 
 ## Equipment used
